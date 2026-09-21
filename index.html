@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acting Driver Manager</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:#fff;
+    min-height:100vh;
+}
+
+.header{
+    padding:22px 15px;
+    text-align:center;
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    box-shadow:0 5px 20px #0005;
+}
+
+.header h1{font-size:25px}
+.header p{margin-top:6px;font-size:13px;opacity:.85}
+
+.container{
+    width:95%;
+    max-width:1100px;
+    margin:20px auto;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.stat{
+    background:#ffffff12;
+    border:1px solid #ffffff20;
+    padding:17px 10px;
+    border-radius:16px;
+    text-align:center;
+    backdrop-filter:blur(10px);
+}
+
+.stat .icon{font-size:24px}
+.stat h2{margin-top:7px;font-size:21px}
+.stat p{font-size:12px;color:#cbd5e1;margin-top:4px}
+
+.card{
+    background:#fff;
+    color:#111827;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 10px 30px #0004;
+}
+
+.card h2{
+    color:#1e293b;
+    margin-bottom:16px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-group label{
+    font-size:13px;
+    font-weight:bold;
+    color:#475569;
+    margin-bottom:6px;
+}
+
+input,textarea,select{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+    outline:none;
+    font-size:15px;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px #2563eb20;
+}
+
+textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+.full{grid-column:1/-1}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:15px;
+}
+
+.btn{
+    border:0;
+    padding:12px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    color:#fff;
+}
+
+.btn-secondary{
+    background:#e2e8f0;
+    color:#111827;
+}
+
+.btn-success{
+    background:#16a34a;
+    color:#fff;
+}
+
+.btn-danger{
+    background:#ef4444;
+    color:#fff;
+}
+
+.search{
+    margin-bottom:15px;
+}
+
+/* TRIPS */
+
+.trip-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.trip{
+    background:#f8fafc;
+    color:#111827;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    padding:17px;
+    position:relative;
+}
+
+.trip::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    width:5px;
+    height:100%;
+    background:#2563eb;
+    border-radius:10px 0 0 10px;
+}
+
+.trip h3{
+    margin-bottom:8px;
+}
+
+.route{
+    color:#2563eb;
+    font-weight:bold;
+    font-size:16px;
+    margin-bottom:10px;
+}
+
+.trip-info{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    font-size:13px;
+}
+
+.trip-info span{
+    background:#fff;
+    padding:8px;
+    border-radius:7px;
+}
+
+.notes{
+    margin-top:10px;
+    padding:10px;
+    background:#fef9c3;
+    color:#713f12;
+    border-radius:8px;
+    font-size:13px;
+}
+
+.status{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.upcoming{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.completed{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.cancelled{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+.trip-actions{
+    display:flex;
+    gap:7px;
+    margin-top:12px;
+}
+
+.trip-actions button{
+    flex:1;
+    border:0;
+    padding:9px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* EARNINGS */
+
+.earning-top{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:18px;
+}
+
+.earning-box{
+    padding:18px;
+    border-radius:15px;
+    background:linear-gradient(135deg,#eff6ff,#f5f3ff);
+    border:1px solid #dbeafe;
+}
+
+.earning-box small{
+    color:#64748b;
+    font-weight:bold;
+}
+
+.earning-box h3{
+    margin-top:7px;
+    font-size:24px;
+    color:#2563eb;
+}
+
+.month-filter{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.month-filter select{
+    max-width:250px;
+}
+
+.report-table{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:10px;
+}
+
+.report-table th,
+.report-table td{
+    padding:11px;
+    text-align:left;
+    border-bottom:1px solid #e2e8f0;
+    font-size:13px;
+}
+
+.report-table th{
+    background:#1e293b;
+    color:white;
+}
+
+.report-table tr:hover{
+    background:#f8fafc;
+}
+
+.money{
+    color:#15803d;
+    font-weight:bold;
+}
+
+.empty{
+    text-align:center;
+    padding:30px;
+    color:#64748b;
+}
+
+@media(max-width:700px){
+
+    .dashboard{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .full{
+        grid-column:auto;
+    }
+
+    .trip-list{
+        grid-template-columns:1fr;
+    }
+
+    .earning-top{
+        grid-template-columns:1fr;
+    }
+
+    .report-table{
+        min-width:650px;
+    }
+
+    .table-scroll{
+        overflow-x:auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>🚗 Acting Driver Manager</h1>
+    <p>Trip • Reminder • Notes • Earnings</p>
+</header>
+
+<div class="container">
+
+<!-- DASHBOARD -->
+
+<div class="dashboard">
+
+    <div class="stat">
+        <div class="icon">🚘</div>
+        <h2 id="totalTrips">0</h2>
+        <p>Total Trips</p>
+    </div>
+
+    <div class="stat">
+        <div class="icon">📅</div>
+        <h2 id="upcomingTrips">0</h2>
+        <p>Upcoming</p>
+    </div>
+
+    <div class="stat">
+        <div class="icon">₹</div>
+        <h2 id="totalMoney">₹0</h2>
+        <p>Total Earnings</p>
+    </div>
+
+    <div class="stat">
+        <div class="icon">✅</div>
+        <h2 id="completedTrips">0</h2>
+        <p>Completed</p>
+    </div>
+
+</div>
+
+
+<!-- ADD TRIP -->
+
+<div class="card">
+
+<h2 id="formTitle">➕ Add New Trip</h2>
+
+<input type="hidden" id="editIndex">
+
+<div class="form-grid">
+
+<div class="input-group">
+<label>Customer Name</label>
+<input id="customer" placeholder="Customer name">
+</div>
+
+<div class="input-group">
+<label>Phone Number</label>
+<input id="phone" type="tel" placeholder="9876543210">
+</div>
+
+<div class="input-group">
+<label>Date</label>
+<input id="date" type="date">
+</div>
+
+<div class="input-group">
+<label>Time</label>
+<input id="time" type="time">
+</div>
+
+<div class="input-group">
+<label>From</label>
+<input id="from" placeholder="Pudukkottai">
+</div>
+
+<div class="input-group">
+<label>To</label>
+<input id="to" placeholder="Chennai">
+</div>
+
+<div class="input-group">
+<label>Driving Hours</label>
+<input id="hours" type="number" placeholder="10">
+</div>
+
+<div class="input-group">
+<label>Driving Charge ₹</label>
+<input id="charge" type="number" placeholder="1500">
+</div>
+
+<div class="input-group">
+<label>Status</label>
+<select id="status">
+<option value="upcoming">Upcoming</option>
+<option value="completed">Completed</option>
+<option value="cancelled">Cancelled</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>Reminder</label>
+<select id="reminder">
+<option value="none">No Reminder</option>
+<option value="30">30 Minutes Before</option>
+<option value="60">1 Hour Before</option>
+<option value="120">2 Hours Before</option>
+<option value="1440">1 Day Before</option>
+</select>
+</div>
+
+<div class="input-group full">
+<label>Notes</label>
+<textarea id="notes"
+placeholder="Customer call, toll details, fuel, return trip etc..."></textarea>
+</div>
+
+</div>
+
+<div class="buttons">
+
+<button class="btn btn-primary" onclick="saveTrip()">
+💾 Save Trip
+</button>
+
+<button class="btn btn-secondary" onclick="clearForm()">
+🔄 Clear
+</button>
+
+</div>
+
+</div>
+
+
+<!-- EARNINGS REPORT -->
+
+<div class="card">
+
+<h2>💰 Earnings Report</h2>
+
+<div class="earning-top">
+
+<div class="earning-box">
+<small>ALL TIME EARNINGS</small>
+<h3 id="allEarnings">₹0</h3>
+</div>
+
+<div class="earning-box">
+<small>THIS MONTH</small>
+<h3 id="monthEarnings">₹0</h3>
+</div>
+
+<div class="earning-box">
+<small>TODAY</small>
+<h3 id="todayEarnings">₹0</h3>
+</div>
+
+</div>
+
+
+<div class="month-filter">
+
+<select id="reportMonth" onchange="generateReport()">
+</select>
+
+<button class="btn btn-success" onclick="downloadCSV()">
+📥 Download Report
+</button>
+
+</div>
+
+
+<div class="table-scroll">
+
+<table class="report-table">
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Customer</th>
+<th>Route</th>
+<th>Hours</th>
+<th>Amount</th>
+</tr>
+</thead>
+
+<tbody id="reportBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- TRIP LIST -->
+
+<div class="card">
+
+<h2>📋 My Trips</h2>
+
+<div class="search">
+<input
+id="search"
+placeholder="🔎 Search customer, place, phone..."
+oninput="displayTrips()">
+</div>
+
+<div id="tripList" class="trip-list"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+let trips =
+JSON.parse(localStorage.getItem("actingDriverTrips")) || [];
+
+
+/* SAVE TRIP */
+
+function saveTrip(){
+
+let trip={
+customer:customer.value.trim(),
+phone:phone.value.trim(),
+date:date.value,
+time:time.value,
+from:from.value.trim(),
+to:to.value.trim(),
+hours:hours.value,
+charge:charge.value,
+status:status.value,
+reminder:reminder.value,
+notes:notes.value.trim()
+};
+
+if(!trip.customer || !trip.date ||
+!trip.time || !trip.from || !trip.to){
+
+alert("Please enter Customer, Date, Time, From and To.");
+return;
+}
+
+let index=editIndex.value;
+
+if(index===""){
+trips.push(trip);
+}else{
+trips[index]=trip;
+}
+
+localStorage.setItem(
+"actingDriverTrips",
+JSON.stringify(trips)
+);
+
+clearForm();
+displayTrips();
+generateReport();
+
+alert("Trip saved successfully!");
+
+}
+
+
+/* DISPLAY TRIPS */
+
+function displayTrips(){
+
+let list=document.getElementById("tripList");
+
+let search=document
+.getElementById("search")
+.value.toLowerCase();
+
+list.innerHTML="";
+
+let filtered=trips.filter(t=>
+t.customer.toLowerCase().includes(search) ||
+t.from.toLowerCase().includes(search) ||
+t.to.toLowerCase().includes(search) ||
+t.phone.includes(search)
+);
+
+if(filtered.length===0){
+
+list.innerHTML=
+`<div class="empty">🚗 No trips found</div>`;
+
+updateDashboard();
+return;
+}
+
+filtered.forEach(t=>{
+
+let index=trips.indexOf(t);
+
+let statusText=
+t.status==="upcoming"?"Upcoming":
+t.status==="completed"?"Completed":"Cancelled";
+
+let reminderText=
+t.reminder==="none"
+?"No Reminder"
+:t.reminder+" min before";
+
+list.innerHTML+=`
+
+<div class="trip">
+
+<span class="status ${t.status}">
+${statusText}
+</span>
+
+<h3>👤 ${safe(t.customer)}</h3>
+
+<div class="route">
+📍 ${safe(t.from)} ➜ ${safe(t.to)}
+</div>
+
+<div class="trip-info">
+
+<span>📅 ${formatDate(t.date)}</span>
+<span>⏰ ${t.time}</span>
+<span>📞 ${t.phone||"-"}</span>
+<span>⏱️ ${t.hours||0} hrs</span>
+<span>💰 ₹${Number(t.charge||0).toLocaleString("en-IN")}</span>
+<span>🔔 ${reminderText}</span>
+
+</div>
+
+${t.notes?
+`<div class="notes">📝 ${safe(t.notes)}</div>`:""}
+
+<div class="trip-actions">
+
+<button
+class="btn-success"
+onclick="editTrip(${index})">
+✏️ Edit
+</button>
+
+<button
+class="btn-danger"
+onclick="deleteTrip(${index})">
+🗑️ Delete
+</button>
+
+</div>
+
+</div>
+`;
+
+});
+
+updateDashboard();
+
+}
+
+
+/* DASHBOARD */
+
+function updateDashboard(){
+
+totalTrips.innerText=trips.length;
+
+upcomingTrips.innerText=
+trips.filter(t=>t.status==="upcoming").length;
+
+completedTrips.innerText=
+trips.filter(t=>t.status==="completed").length;
+
+let total=trips.reduce(
+(sum,t)=>sum+Number(t.charge||0),0);
+
+totalMoney.innerText=
+"₹"+total.toLocaleString("en-IN");
+
+}
+
+
+/* EARNINGS REPORT */
+
+function generateReport(){
+
+let selected=
+document.getElementById("reportMonth").value;
+
+if(!selected){
+selected=new Date().toISOString().slice(0,7);
+}
+
+let completed=trips.filter(
+t=>t.status==="completed"
+);
+
+let monthTrips=completed.filter(
+t=>t.date.startsWith(selected)
+);
+
+let monthTotal=monthTrips.reduce(
+(sum,t)=>sum+Number(t.charge||0),0);
+
+let allTotal=completed.reduce(
+(sum,t)=>sum+Number(t.charge||0),0);
+
+let today=new Date().toISOString().slice(0,10);
+
+let todayTotal=completed
+.filter(t=>t.date===today)
+.reduce(
+(sum,t)=>sum+Number(t.charge||0),0);
+
+document.getElementById("allEarnings").innerText=
+"₹"+allTotal.toLocaleString("en-IN");
+
+document.getElementById("monthEarnings").innerText=
+"₹"+monthTotal.toLocaleString("en-IN");
+
+document.getElementById("todayEarnings").innerText=
+"₹"+todayTotal.toLocaleString("en-IN");
+
+
+let body=document.getElementById("reportBody");
+
+body.innerHTML="";
+
+if(monthTrips.length===0){
+
+body.innerHTML=`
+<tr>
+<td colspan="5" style="text-align:center">
+No completed trips for this month
+</td>
+</tr>`;
+
+return;
+}
+
+monthTrips
+.sort((a,b)=>a.date.localeCompare(b.date))
+.forEach(t=>{
+
+body.innerHTML+=`
+
+<tr>
+
+<td>${formatDate(t.date)}</td>
+
+<td>${safe(t.customer)}</td>
+
+<td>
+${safe(t.from)}
+➜
+${safe(t.to)}
+</td>
+
+<td>${t.hours||0} hrs</td>
+
+<td class="money">
+₹${Number(t.charge||0).toLocaleString("en-IN")}
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+/* MONTH SELECT */
+
+function loadMonths(){
+
+let select=
+document.getElementById("reportMonth");
+
+let now=new Date();
+
+for(let i=0;i<12;i++){
+
+let d=new Date(
+now.getFullYear(),
+now.getMonth()-i,
+1
+);
+
+let value=
+d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0");
+
+let text=d.toLocaleDateString(
+"en-IN",
+{
+month:"long",
+year:"numeric"
+}
+);
+
+select.innerHTML+=
+`<option value="${value}">
+${text}
+</option>`;
+
+}
+
+}
+
+
+/* DOWNLOAD CSV */
+
+function downloadCSV(){
+
+let month=
+document.getElementById("reportMonth").value;
+
+let rows=[
+["Date","Customer","From","To","Hours","Amount"]
+];
+
+trips
+.filter(t=>
+t.status==="completed" &&
+t.date.startsWith(month)
+)
+.forEach(t=>{
+
+rows.push([
+t.date,
+t.customer,
+t.from,
+t.to,
+t.hours||0,
+t.charge||0
+]);
+
+});
+
+if(rows.length===1){
+
+alert("No completed trips found.");
+return;
+}
+
+let csv=rows
+.map(row=>
+row.map(v=>
+`"${String(v).replace(/"/g,'""')}"`
+).join(",")
+)
+.join("\n");
+
+let blob=new Blob(
+[csv],
+{type:"text/csv;charset=utf-8;"}
+);
+
+let url=URL.createObjectURL(blob);
+
+let a=document.createElement("a");
+
+a.href=url;
+a.download="Acting_Driver_Earnings_"+month+".csv";
+
+a.click();
+
+URL.revokeObjectURL(url);
+
+}
+
+
+/* EDIT */
+
+function editTrip(index){
+
+let t=trips[index];
+
+customer.value=t.customer;
+phone.value=t.phone;
+date.value=t.date;
+time.value=t.time;
+from.value=t.from;
+to.value=t.to;
+hours.value=t.hours;
+charge.value=t.charge;
+status.value=t.status;
+reminder.value=t.reminder;
+notes.value=t.notes;
+
+editIndex.value=index;
+
+document.getElementById("formTitle").innerText=
+"✏️ Edit Trip";
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+/* DELETE */
+
+function deleteTrip(index){
+
+if(confirm("Delete this trip?")){
+
+trips.splice(index,1);
+
+localStorage.setItem(
+"actingDriverTrips",
+JSON.stringify(trips)
+);
+
+displayTrips();
+generateReport();
+
+}
+
+}
+
+
+/* CLEAR */
+
+function clearForm(){
+
+customer.value="";
+phone.value="";
+date.value="";
+time.value="";
+from.value="";
+to.value="";
+hours.value="";
+charge.value="";
+notes.value="";
+
+status.value="upcoming";
+reminder.value="none";
+editIndex.value="";
+
+document.getElementById("formTitle").innerText=
+"➕ Add New Trip";
+
+}
+
+
+/* DATE */
+
+function formatDate(d){
+
+if(!d)return"-";
+
+return new Date(d+"T00:00:00")
+.toLocaleDateString(
+"en-IN",
+{
+day:"2-digit",
+month:"short",
+year:"numeric"
+}
+);
+
+}
+
+
+/* SAFE HTML */
+
+function safe(text){
+
+return String(text||"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* DEFAULT DATE */
+
+function setToday(){
+
+let d=new Date();
+
+date.value=
+d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0")+"-"+
+String(d.getDate()).padStart(2,"0");
+
+}
+
+
+/* START */
+
+loadMonths();
+setToday();
+displayTrips();
+generateReport();
+
+</script>
+
+</body>
+</html>
